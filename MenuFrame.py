@@ -2,12 +2,17 @@ from tkinter import *
 from tkinter import ttk, filedialog
 from PIL import Image, ImageTk, UnidentifiedImageError
 from os import listdir
-from collections import namedtuple
+from dataclasses import dataclass
+# from collections import namedtuple
 
 # from main import GestureDrawing
 
 
-SessionData = namedtuple("SessionData", ['images', 'interval'])
+# SessionData = namedtuple("SessionData", ['images', 'interval'])
+@dataclass
+class SessionData:
+    images: list[Image.Image]
+    interval: int = 0
 
 
 class MenuFrame(ttk.Frame):
@@ -22,7 +27,6 @@ class MenuFrame(ttk.Frame):
         self.init_widgets()
 
     def init_widgets(self):
-        # self.pack(expand=True, fill=BOTH)
         self.grid_columnconfigure(1, weight=1)
         self.grid_rowconfigure(1, weight=0)
         self.grid_rowconfigure(2, weight=0)
@@ -63,7 +67,8 @@ class MenuFrame(ttk.Frame):
         self.source_dir.set(filedialog.askdirectory())
 
     def start(self):
-        self.pack(expand=True, fill=BOTH)
+        # self.pack(expand=True, fill=BOTH)
+        self.grid(row=0, column=0, sticky=NSEW)
 
     def finish(self):
         src_dir = self.source_dir.get()
@@ -74,7 +79,7 @@ class MenuFrame(ttk.Frame):
         success, failure = 0, 0
         for filename in listdir(src_dir):
             try:
-                images.append(ImageTk.PhotoImage(Image.open(src_dir + '/' + filename)))
+                images.append(Image.open(src_dir + '/' + filename))
                 success += 1
 
             except UnidentifiedImageError as ex:
@@ -87,6 +92,6 @@ class MenuFrame(ttk.Frame):
         print(f"loaded {success}/{failure + success} images")
 
 
-        self.pack_forget()
+        self.grid_forget()
 
-        self.gd.recieve_data(SessionData(images=images, interval=interval))
+        self.gd.receive_data(SessionData(images=images, interval=interval))
