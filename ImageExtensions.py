@@ -33,22 +33,28 @@ def compress_image(image: Image.Image, scale: int):  # scale <= 1
 
 
 class OptimizedImage:
-    def __init__(self, image: Image.Image, step: int = 0.5, grades: int = 5):
+    def __init__(self, image: Image.Image, step: int = 0.8, grades: int = 5):
         self.native_size = image.size
         self.step = step
+        self.grades = grades
 
         self.series = [compress_image(image, step ** i) for i in range(grades)]
+        # print(*self.series, sep='\n')
 
-    def __getitem__(self, size: tuple[int, int]):
+    def __getitem__(self, size: tuple[int, int]) -> Image.Image:
         size = get_rationed_size(self.native_size, size, ceil)
         scale = min(size[0] / self.native_size[0], 1)
-        grade = floor(math.log(scale, self.step))
+        grade = min(floor(math.log(scale, self.step)), self.grades - 1)
 
         return self.series[grade]
 
+    def resized(self, size: tuple[int, int]):
+        src = self[size]
+        # print(f"used size: {src.size}, target size: {get_rationed_size(src.size, size)}")
+        return resize_rationed(src, size)
+
 
 if __name__ == '__main__':
-    a = OptimizedImage(Image.open("test_image2.jpg"))
+    a = OptimizedImage(Image.open("test_images/test_image2.jpg"))
     for i in a.series:
         i.show()
-    # a[(1000, 1000)].show()

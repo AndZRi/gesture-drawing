@@ -1,18 +1,38 @@
+import random
 from tkinter import *
 from tkinter import ttk, filedialog
-from PIL import Image, ImageTk, UnidentifiedImageError
+from PIL import Image, UnidentifiedImageError
 from os import listdir
 from dataclasses import dataclass
-# from collections import namedtuple
 
+from ImageExtensions import OptimizedImage
 # from main import GestureDrawing
 
 
-# SessionData = namedtuple("SessionData", ['images', 'interval'])
 @dataclass
 class SessionData:
-    images: list[Image.Image]
+    images: list[OptimizedImage]
     interval: int = 0
+
+
+def get_images(src_dir: str):
+    images = []
+    success, failure = 0, 0
+    for filename in listdir(src_dir):
+        try:
+            images.append(OptimizedImage(Image.open(src_dir + '/' + filename)))
+            success += 1
+
+        except UnidentifiedImageError as ex:
+            print(ex)
+            failure += 1
+
+        except NotADirectoryError as ex:
+            print(ex)
+            return
+    print(f"loaded {success}/{failure + success} images")
+
+    return images
 
 
 class MenuFrame(ttk.Frame):
@@ -23,6 +43,8 @@ class MenuFrame(ttk.Frame):
         self.source_dir = StringVar()
         self.mins = IntVar()
         self.secs = IntVar()
+
+        self.do_shuffle = True
 
         self.init_widgets()
 
@@ -67,7 +89,6 @@ class MenuFrame(ttk.Frame):
         self.source_dir.set(filedialog.askdirectory())
 
     def start(self):
-        # self.pack(expand=True, fill=BOTH)
         self.grid(row=0, column=0, sticky=NSEW)
 
     def finish(self):
@@ -75,23 +96,13 @@ class MenuFrame(ttk.Frame):
         interval = self.mins.get() * 60 + self.secs.get()
 
         # get images from the directory to a list
-        images = []
-        success, failure = 0, 0
-        for filename in listdir(src_dir):
-            try:
-                images.append(Image.open(src_dir + '/' + filename))
-                success += 1
+        images = get_images(src_dir)
 
-            except UnidentifiedImageError as ex:
-                print(ex)
-                failure += 1
-
-            except NotADirectoryError as ex:
-                print(ex)
-                return
-        print(f"loaded {success}/{failure + success} images")
-
+        if self.do_shuffle:
+            random.shuffle(images)
 
         self.grid_forget()
 
         self.gd.receive_data(SessionData(images=images, interval=interval))
+
+# ПОПРАВЬ IMAGES[IMAGE.IMAGE] НА IMAGES[IMAGESERIES]

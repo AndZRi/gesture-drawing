@@ -3,22 +3,16 @@ from tkinter import *
 from tkinter import ttk
 
 from PIL import ImageTk, Image
-from math import floor
 
+import MenuFrame
+from ImageExtensions import resize_rationed, OptimizedImage
 from MenuFrame import SessionData
 
 
-def resize_rationed(image: Image.Image, width, height):
-    ratio = image.width / image.height
-    nw1 = floor(height * ratio)
-    nh1 = floor(nw1 / ratio)
-
-    nh2 = floor(width / ratio)
-    nw2 = floor(nh2 * ratio)
-
-    if nw1 <= nw2:
-        return image.resize((nw1, nh1), resample=Image.Resampling.BOX)
-    return image.resize((nw2, nh2), resample=Image.Resampling.BOX)
+#def get_mins_secs(seconds: int) -> tuple[int, int]:
+#    mins = seconds // 60
+#    secs = seconds - mins * 60
+#    return mins, secs
 
 
 class ShowFrame(ttk.Frame):
@@ -27,16 +21,19 @@ class ShowFrame(ttk.Frame):
 
         self.gd = gd
         self.cur_image_i = 0
+        self.cur_image = OptimizedImage(Image.open("test_images/test_image.jpg"))
         self.cur_image_size = (0, 0)
-        # self.widgetName = ""
+        self.data = SessionData([self.cur_image], 0)
+
+        self.time_left = 0
+        self.time_label_text = StringVar()
 
         self.init_widgets()
-
         self.bind("<Configure>", self.on_configured)
 
     def init_widgets(self):
         img_label = ttk.Label(self)
-        time_label = ttk.Label(self)
+        time_label = ttk.Label(self, textvariable=self.time_label_text, font=('consolas', 20))
 
         time_label.pack(expand=False, side=TOP)
         img_label.pack(expand=True, anchor=CENTER)
@@ -48,29 +45,62 @@ class ShowFrame(ttk.Frame):
         self.grid(row=0, column=0, sticky=NSEW)
 
         self.data = data
-        self.img_label.configure(image=ImageTk.PhotoImage(data.images[0]), text='gde image muzhiki')
-        self.img_label.image = ImageTk.PhotoImage(data.images[0])
+        self.cur_image = data.images[self.cur_image_i]
+        self.after(50, self.change_image)
 
-        self.resize_current_image(200, 200)
+        self.time_left = data.interval
+        self.on_timer_tick()
+        # self.resize_current_image(self.winfo_width(), self.winfo_height())
+
+    def change_image(self): #, new_image: OptimizedImage):
+        # self.img_label.configure(image=ImageTk.PhotoImage(new_image), text='gde image muzhiki')
+        # self.img_label.image = ImageTk.PhotoImage(new_image)
+        self.resize_current_image(self.winfo_width(), self.winfo_height() - self.time_label.winfo_height())
 
     def on_configured(self, event: tkinter.Event):
         if event.width != self.cur_image_size[0] or event.height != self.cur_image_size[1]:
             self.resize_current_image(event.width, event.height - self.time_label.winfo_height())
 
     def resize_current_image(self, width, height):
-        new_image = resize_rationed(self.data.images[self.cur_image_i], width, height)
+        # new_image = resize_rationed(self.data.images[self.cur_image_i], (width, height))
+        new_image = self.cur_image.resized((width, height))
+
         new_image_tk = ImageTk.PhotoImage(new_image)
         self.img_label.configure(image=new_image_tk)
         self.img_label.image = new_image_tk
         self.cur_image_size = new_image_tk.width(), new_image_tk.height()
 
+    def on_timer_tick(self):
+        self.time_left -= 1
+
+        if self.time_left == 0:
+            self.on_time_expired()
+
+        self.refresh_time_label()
+        self.time_label.after(1000, self.on_timer_tick)
+
+    def on_time_expired(self):
+        self.cur_image_i += 1
+        if self.cur_image_i >= len(self.data.images):
+            self.cur_image_i = 0
+
+        self.cur_image = self.data.images[self.cur_image_i]
+        self.change_image()
+        self.time_left = self.data.interval
+
+    def refresh_time_label(self):
+        mins = self.time_left // 60
+        secs = self.time_left - mins * 60
+        self.time_label_text.set(f"{mins:02d}:{secs:02d}")
+
 
 if __name__ == '__main__':
     from main import GestureDrawing
+    TEST_INTERVAL = 5
+    TEST_IMAGES = MenuFrame.get_images("test_images")
 
     root = Tk()
     gd = GestureDrawing(root)
 
-    test_images = [Image.open("test_image.jpg")]
-    gd.receive_data(SessionData(images=test_images, interval=-1))
+    gd.receive_data(SessionData(images=TEST_IMAGES, interval=TEST_INTERVAL))
     root.mainloop()
