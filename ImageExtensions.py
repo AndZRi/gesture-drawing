@@ -32,7 +32,7 @@ def compress_image(image: Image.Image, scale: int):  # scale <= 1
     return resize_rationed(image, (image.width * scale, image.height * scale), Image.Resampling.LANCZOS, ceil)
 
 
-class ImageSeries:
+class OptimizedImage:
     def __init__(self, image: Image.Image, step: int = 0.5, grades: int = 5):
         self.native_size = image.size
         self.step = step
@@ -48,7 +48,7 @@ class ImageSeries:
 
 
 if __name__ == '__main__':
-    a = ImageSeries(Image.open("test_image2.jpg"))
+    a = OptimizedImage(Image.open("test_image2.jpg"))
     for i in a.series:
         i.show()
     # a[(1000, 1000)].show()
