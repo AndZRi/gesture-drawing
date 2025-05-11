@@ -2,9 +2,11 @@ import random
 from tkinter import *
 from tkinter import ttk, filedialog, messagebox
 from PIL import Image, UnidentifiedImageError
-from os import listdir
-import os
+
+
+from os import listdir, path
 from dataclasses import dataclass
+from collections.abc import Generator
 
 from ImageExtensions import OptimizedImage
 # from main import GestureDrawing
@@ -16,15 +18,15 @@ class SessionData:
     interval: int = 0
 
 
-def get_images_from_dir(src_dir: str) -> list[OptimizedImage]:
-    images = []
+def get_images_from_dir(src_dir: str) -> Generator:
     success, failure = 0, 0
 
-    if not os.path.isdir(src_dir):
-        return []
+    if not path.isdir(src_dir):
+        return
     for filename in listdir(src_dir):
         try:
-            images.append(OptimizedImage(Image.open(src_dir + '/' + filename)))
+            # images.append(OptimizedImage(Image.open(src_dir + '/' + filename)))
+            yield OptimizedImage(Image.open(src_dir + '/' + filename))
             success += 1
 
         except UnidentifiedImageError as ex:
@@ -32,8 +34,6 @@ def get_images_from_dir(src_dir: str) -> list[OptimizedImage]:
             failure += 1
 
     print(f"loaded {success}/{failure + success} files")
-
-    return images
 
 
 class MenuFrame(ttk.Frame):
@@ -96,7 +96,8 @@ class MenuFrame(ttk.Frame):
         src_dir = self.source_dir.get()
         interval = self.mins.get() * 60 + self.secs.get()
 
-        images = get_images_from_dir(src_dir)
+        images = list(get_images_from_dir(src_dir))
+        # print(*images, sep='\n')
         if not images:
             messagebox.showwarning("Error", "Please, select an existing and not empty directory.")
             return
