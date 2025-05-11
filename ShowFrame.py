@@ -14,9 +14,9 @@ class ShowFrame(ttk.Frame):
 
         self.gd = gd
         self.cur_image_i = 0
-        self.cur_image = OptimizedImage(Image.open("test_images/test_image.jpg"))
+        self.cur_optimized_image = OptimizedImage(Image.open("test_images/test_image.jpg"))
         self.cur_image_size = (0, 0)
-        self.data = SessionData([self.cur_image], 0)
+        self.data = SessionData([Image.open("test_images/test_image.jpg")], 0)
 
         self.time_left = 0
         self.time_label_text = StringVar()
@@ -25,7 +25,7 @@ class ShowFrame(ttk.Frame):
         self.bind("<Configure>", self.on_configured)
 
     def init_widgets(self):
-        img_label = ttk.Label(self)
+        img_label = ttk.Label(self, text='Loading image...')
         time_label = ttk.Label(self, textvariable=self.time_label_text, font=('consolas', 20))
 
         time_label.pack(expand=False, side=TOP)
@@ -38,7 +38,7 @@ class ShowFrame(ttk.Frame):
         self.grid(row=0, column=0, sticky=NSEW)
 
         self.data = data
-        self.cur_image = data.images[self.cur_image_i]
+        self.cur_optimized_image = OptimizedImage(self.data.images[self.cur_image_i])
         self.after(50, self.change_image)
 
         self.time_left = data.interval
@@ -46,6 +46,10 @@ class ShowFrame(ttk.Frame):
         self.time_label.after(1000, self.on_timer_tick)
 
     def change_image(self):
+        self.img_label.configure(image=None)
+        self.img_label.image = None
+        self.img_label.update()
+        self.cur_optimized_image = OptimizedImage(self.data.images[self.cur_image_i])
         self.resize_current_image(self.winfo_width(), self.winfo_height() - self.time_label.winfo_height())
 
     def on_configured(self, event: tkinter.Event):
@@ -53,7 +57,7 @@ class ShowFrame(ttk.Frame):
             self.resize_current_image(event.width, event.height - self.time_label.winfo_height())
 
     def resize_current_image(self, width, height):
-        new_image = self.cur_image.resized((width, height))
+        new_image = self.cur_optimized_image.resized((width, height))
 
         new_image_tk = ImageTk.PhotoImage(new_image)
         self.img_label.configure(image=new_image_tk)
@@ -74,7 +78,6 @@ class ShowFrame(ttk.Frame):
         if self.cur_image_i >= len(self.data.images):
             self.cur_image_i = 0
 
-        self.cur_image = self.data.images[self.cur_image_i]
         self.change_image()
         self.time_left = self.data.interval
 

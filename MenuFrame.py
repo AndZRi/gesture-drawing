@@ -6,17 +6,16 @@ from os import listdir
 import os
 from dataclasses import dataclass
 
-from ImageExtensions import OptimizedImage
 # from main import GestureDrawing
 
 
 @dataclass
 class SessionData:
-    images: list[OptimizedImage]
+    images: list[Image.Image]
     interval: int = 0
 
 
-def get_images_from_dir(src_dir: str) -> list[OptimizedImage]:
+def get_images_from_dir(src_dir: str) -> list[Image.Image]:
     images = []
     success, failure = 0, 0
 
@@ -24,7 +23,7 @@ def get_images_from_dir(src_dir: str) -> list[OptimizedImage]:
         return []
     for filename in listdir(src_dir):
         try:
-            images.append(OptimizedImage(Image.open(src_dir + '/' + filename)))
+            images.append(Image.open(src_dir + '/' + filename))
             success += 1
 
         except UnidentifiedImageError as ex:
