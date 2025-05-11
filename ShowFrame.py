@@ -42,7 +42,8 @@ class ShowFrame(ttk.Frame):
         self.after(50, self.change_image)
 
         self.time_left = data.interval
-        self.on_timer_tick()
+        self.refresh_time_label()
+        self.time_label.after(1000, self.on_timer_tick)
 
     def change_image(self):
         self.resize_current_image(self.winfo_width(), self.winfo_height() - self.time_label.winfo_height())
