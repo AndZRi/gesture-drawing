@@ -54,6 +54,6 @@ class OptimizedImage:
 
 
 if __name__ == '__main__':
-    a = OptimizedImage(Image.open("test_images/test_image2.jpg"))
+    a = OptimizedImage(Image.open("test_images/test_image2.webp"))
     for i in a.series:
         i.show()
