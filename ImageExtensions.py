@@ -3,8 +3,6 @@ import math
 from PIL import Image
 from math import floor, ceil
 
-from dataclasses import dataclass
-
 def get_rationed_size(src_size: tuple[int, int], new_size: tuple[int, int], round_func=floor):
     width, height = new_size
     ratio = src_size[0] / src_size[1]
@@ -23,8 +21,8 @@ def resize_rationed(image: Image.Image, new_size, resample=Image.Resampling.BOX,
     return image.resize(get_rationed_size(image.size, new_size, round_func), resample)
 
 
-def compress_image(image: Image.Image, scale: int):  # scale <= 1
-    if scale < 0 or scale > 1:
+def compress_image(image: Image.Image, scale: int):
+    if not 0 < scale <= 1:
         raise ValueError("Provided scale is more than 1 or less than 0 (0 < scale <= 1).")
     if scale == 1:
         return image
@@ -32,8 +30,9 @@ def compress_image(image: Image.Image, scale: int):  # scale <= 1
     return resize_rationed(image, (image.width * scale, image.height * scale), Image.Resampling.LANCZOS, ceil)
 
 
+# probably should check the initial size and skip first grades of compression
 class OptimizedImage:
-    def __init__(self, image: Image.Image, step: int = 0.8, grades: int = 5):
+    def __init__(self, image: Image.Image, step: int = 0.6, grades: int = 4):
         self.native_size = image.size
         self.step = step
         self.grades = grades

@@ -1,8 +1,9 @@
 import random
 from tkinter import *
-from tkinter import ttk, filedialog
+from tkinter import ttk, filedialog, messagebox
 from PIL import Image, UnidentifiedImageError
 from os import listdir
+import os
 from dataclasses import dataclass
 
 from ImageExtensions import OptimizedImage
@@ -15,9 +16,12 @@ class SessionData:
     interval: int = 0
 
 
-def get_images(src_dir: str):
+def get_images_from_dir(src_dir: str) -> list[OptimizedImage]:
     images = []
     success, failure = 0, 0
+
+    if not os.path.isdir(src_dir):
+        return []
     for filename in listdir(src_dir):
         try:
             images.append(OptimizedImage(Image.open(src_dir + '/' + filename)))
@@ -27,10 +31,7 @@ def get_images(src_dir: str):
             print(ex)
             failure += 1
 
-        except NotADirectoryError as ex:
-            print(ex)
-            return
-    print(f"loaded {success}/{failure + success} images")
+    print(f"loaded {success}/{failure + success} files")
 
     return images
 
@@ -44,7 +45,7 @@ class MenuFrame(ttk.Frame):
         self.mins = IntVar()
         self.secs = IntVar()
 
-        self.do_shuffle = True
+        self.do_shuffle = True  # remember to make a checkbox for this
 
         self.init_widgets()
 
@@ -95,14 +96,14 @@ class MenuFrame(ttk.Frame):
         src_dir = self.source_dir.get()
         interval = self.mins.get() * 60 + self.secs.get()
 
-        # get images from the directory to a list
-        images = get_images(src_dir)
+        images = get_images_from_dir(src_dir)
+        if not images:
+            messagebox.showwarning("Error", "Please, select an existing and not empty directory.")
+            return
 
         if self.do_shuffle:
             random.shuffle(images)
 
         self.grid_forget()
 
-        self.gd.receive_data(SessionData(images=images, interval=interval))
-
-# ПОПРАВЬ IMAGES[IMAGE.IMAGE] НА IMAGES[IMAGESERIES]
+        self.gd.on_data_received(SessionData(images=images, interval=interval))

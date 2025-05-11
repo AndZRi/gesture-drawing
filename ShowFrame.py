@@ -5,14 +5,8 @@ from tkinter import ttk
 from PIL import ImageTk, Image
 
 import MenuFrame
-from ImageExtensions import resize_rationed, OptimizedImage
+from ImageExtensions import OptimizedImage
 from MenuFrame import SessionData
-
-
-#def get_mins_secs(seconds: int) -> tuple[int, int]:
-#    mins = seconds // 60
-#    secs = seconds - mins * 60
-#    return mins, secs
 
 
 class ShowFrame(ttk.Frame):
@@ -50,11 +44,8 @@ class ShowFrame(ttk.Frame):
 
         self.time_left = data.interval
         self.on_timer_tick()
-        # self.resize_current_image(self.winfo_width(), self.winfo_height())
 
-    def change_image(self): #, new_image: OptimizedImage):
-        # self.img_label.configure(image=ImageTk.PhotoImage(new_image), text='gde image muzhiki')
-        # self.img_label.image = ImageTk.PhotoImage(new_image)
+    def change_image(self):
         self.resize_current_image(self.winfo_width(), self.winfo_height() - self.time_label.winfo_height())
 
     def on_configured(self, event: tkinter.Event):
@@ -62,7 +53,6 @@ class ShowFrame(ttk.Frame):
             self.resize_current_image(event.width, event.height - self.time_label.winfo_height())
 
     def resize_current_image(self, width, height):
-        # new_image = resize_rationed(self.data.images[self.cur_image_i], (width, height))
         new_image = self.cur_image.resized((width, height))
 
         new_image_tk = ImageTk.PhotoImage(new_image)
@@ -95,12 +85,13 @@ class ShowFrame(ttk.Frame):
 
 
 if __name__ == '__main__':
-    from main import GestureDrawing
-    TEST_INTERVAL = 5
-    TEST_IMAGES = MenuFrame.get_images("test_images")
+    from GestureDrawing import GestureDrawing
+    from MenuFrame import get_images_from_dir
+    from GlobalConstants import *
+
 
     root = Tk()
     gd = GestureDrawing(root)
 
-    gd.receive_data(SessionData(images=TEST_IMAGES, interval=TEST_INTERVAL))
+    gd.on_data_received(SessionData(images=get_images_from_dir(TEST_IMAGES_DIR), interval=TEST_INTERVAL))
     root.mainloop()
