@@ -4,7 +4,6 @@ from tkinter import ttk
 
 from PIL import ImageTk, Image
 
-import MenuFrame
 from ImageExtensions import OptimizedImage
 from MenuFrame import SessionData
 
