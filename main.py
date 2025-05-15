@@ -1,5 +1,5 @@
 from tkinter import *
-from GestureDrawing import GestureDrawing
+from modules.GestureDrawing import GestureDrawing
 
 
 if __name__ == '__main__':
