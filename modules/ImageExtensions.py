@@ -17,7 +17,7 @@ def get_rationed_size(src_size: tuple[int, int], new_size: tuple[int, int], roun
     return nw2, nh2
 
 
-def resize_rationed(image: Image.Image, new_size, resample=Image.Resampling.BOX, round_func=floor):
+def resize_rationed(image: Image.Image, new_size: tuple[int, int], resample=Image.Resampling.BOX, round_func=floor):
     return image.resize(get_rationed_size(image.size, new_size, round_func), resample)
 
 

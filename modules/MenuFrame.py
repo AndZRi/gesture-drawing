@@ -1,12 +1,16 @@
 import random
 from tkinter import *
 from tkinter import ttk, filedialog, messagebox
+
 from PIL import Image, UnidentifiedImageError
-from os import listdir
+
 import os
+from os import listdir
 from dataclasses import dataclass
 
-# from main import GestureDrawing
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from main import GestureDrawing
 
 
 @dataclass
@@ -36,7 +40,7 @@ def get_images_from_dir(src_dir: str) -> list[Image.Image]:
 
 
 class MenuFrame(ttk.Frame):
-    def __init__(self, gd, padding='12 12 12 12'):
+    def __init__(self, gd: 'GestureDrawing', padding='12 12 12 12'):
         super().__init__(gd.root, padding=padding)
 
         self.gd = gd

@@ -7,9 +7,13 @@ from PIL import ImageTk, Image
 from modules.ImageExtensions import OptimizedImage
 from modules.MenuFrame import SessionData
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from main import GestureDrawing
+
 
 class ShowFrame(ttk.Frame):
-    def __init__(self, gd):
+    def __init__(self, gd: 'GestureDrawing'):
         super().__init__(gd.root)
 
         self.gd = gd
