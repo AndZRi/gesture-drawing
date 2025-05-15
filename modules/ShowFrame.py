@@ -66,11 +66,13 @@ class ShowFrame(ttk.Frame):
 
     def on_timer_tick(self):
         self.time_left -= 1
+        self.refresh_time_label()
 
         if self.time_left == 0:
             self.on_time_expired()
+            self.time_left = self.data.interval
+            self.refresh_time_label()
 
-        self.refresh_time_label()
         self.time_label.after(1000, self.on_timer_tick)
 
     def on_time_expired(self):
@@ -79,12 +81,12 @@ class ShowFrame(ttk.Frame):
             self.cur_image_i = 0
 
         self.change_image()
-        self.time_left = self.data.interval
 
     def refresh_time_label(self):
         mins = self.time_left // 60
         secs = self.time_left - mins * 60
         self.time_label_text.set(f"{mins:02d}:{secs:02d}")
+        self.time_label.update()
 
 
 if __name__ == '__main__':
