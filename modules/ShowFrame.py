@@ -4,8 +4,8 @@ from tkinter import ttk
 
 from PIL import ImageTk, Image
 
-from ImageExtensions import OptimizedImage
-from MenuFrame import SessionData
+from modules.ImageExtensions import OptimizedImage
+from modules.MenuFrame import SessionData
 
 
 class ShowFrame(ttk.Frame):
@@ -14,9 +14,9 @@ class ShowFrame(ttk.Frame):
 
         self.gd = gd
         self.cur_image_i = 0
-        self.cur_optimized_image = OptimizedImage(Image.open("../test_images/test_image.jpg"))
+        self.cur_optimized_image = OptimizedImage(Image.open("./test_images/test_image.jpg"))
         self.cur_image_size = (0, 0)
-        self.data = SessionData([Image.open("../test_images/test_image.jpg")], 0)
+        self.data = SessionData([Image.open("./test_images/test_image.jpg")], 0)
 
         self.time_left = 0
         self.time_label_text = StringVar()
