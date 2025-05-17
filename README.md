@@ -1,6 +1,10 @@
 # Gesture Drawing
 Basically a version of Gesture Drawing for poor (12$ for the slideshow wtf)
 
+1. Pick a folder with images
+
+2. Get your shuffled images slideshow with your time interval!
+
 ## it does invoke smartscreen defender because the test images are hidden now, don't worry
 ## if you are really afraid of it, you can compile the program by yourself
 WHY DOES IT INVOKE SMARTSCREEN THIS IS SO STUPID
