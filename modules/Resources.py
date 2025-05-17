@@ -10,7 +10,7 @@ def resource_path(relative_path):
 
 
 class RelativePaths:
-    TEST_IMAGES_DIR = "../test_images"
+    TEST_IMAGES_DIR = "./test_images"
 
 class Processed:
     TestImages = get_images_from_dir(resource_path(RelativePaths.TEST_IMAGES_DIR))
