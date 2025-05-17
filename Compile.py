@@ -1,4 +1,4 @@
-from Resources import RelativePaths
+from modules.Resources import RelativePaths
 
 import PyInstaller.__main__
 
