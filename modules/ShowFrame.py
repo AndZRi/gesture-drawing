@@ -27,7 +27,7 @@ class ShowFrame(ttk.Frame):
         self.time_label_text = StringVar()
 
         self.init_widgets()
-        self.bind("<Configure>", self.on_configured)
+        self.img_label.bind("<Configure>", self.on_img_label_configured)
 
     def init_widgets(self):
         self.configure(borderwidth=0)
@@ -71,13 +71,10 @@ class ShowFrame(ttk.Frame):
 
         self.cur_optimized_image = OptimizedImage(self.data.images[self.cur_image_i])
         self.resize_current_image(width, height)
-        # self.resize_current_image(self.winfo_width(), self.winfo_height() - self.time_label.winfo_height())
 
-    def on_configured(self, event: tkinter.Event):
+    def on_img_label_configured(self, event: tkinter.Event):
         if event.width != self.cur_image_size[0] or event.height != self.cur_image_size[1]:
-            # self.resize_current_image(event.width, event.height - self.time_label.winfo_height())
-            self.img_label.update_idletasks()
-            self.resize_current_image(self.img_label.winfo_width(), self.img_label.winfo_height())
+            self.resize_current_image(event.width, event.height)
 
     def resize_current_image(self, width, height):
         # +3 +3 to remove the space on sides and bottom (idk where that comes from)
