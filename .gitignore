@@ -1,4 +1,6 @@
-output
-venv
+output/
+venv/
 __pycache__/
 .idea/
+dist/
+build/
