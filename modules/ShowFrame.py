@@ -19,7 +19,7 @@ class ShowFrame(ttk.Frame):
 
         self.gd = gd
         self.cur_image_i = 0
-        self.data = SessionData([Processed.TestImages[0]], 0)
+        self.data = SessionData(Processed.TestImages, 0)
         self.cur_optimized_image = OptimizedImage(self.data.images[0])
         self.cur_image_size = (0, 0)
 
@@ -30,32 +30,43 @@ class ShowFrame(ttk.Frame):
         self.bind("<Configure>", self.on_configured)
 
     def init_widgets(self):
+        # initializing
         img_label = ttk.Label(self, text='Loading image...')
         time_label = ttk.Label(self, textvariable=self.time_label_text, font=('consolas', 20))
 
+        # packing in the window (frame)
         time_label.pack(expand=False, side=TOP)
         img_label.pack(expand=True, anchor=CENTER)
 
+        # assigning as attributes
         self.img_label = img_label
         self.time_label = time_label
 
     def start(self, data: SessionData):
         self.grid(row=0, column=0, sticky=NSEW)
 
+        # setting the data
         self.data = data
         self.cur_optimized_image = OptimizedImage(self.data.images[self.cur_image_i])
-        self.after(50, self.change_image)
+        self.img_label.update()
+        self.change_image()
 
+        # starting the timer
         self.time_left = data.interval
-        self.refresh_time_label()
-        self.time_label.after(1000, self.on_timer_tick)
+        self.update_time_label()
+        self.time_label.after(1000, self.timer_tick)
 
     def change_image(self):
+        # the label actually shrinks to "Loading image..." size when updated, so we have to
+        width, height = self.img_label.winfo_width(), self.img_label.winfo_height()
+
+        # showing the "Loading image..." thing
         self.img_label.configure(image=None)
         self.img_label.image = None
         self.img_label.update()
+
         self.cur_optimized_image = OptimizedImage(self.data.images[self.cur_image_i])
-        self.resize_current_image(self.winfo_width(), self.winfo_height() - self.time_label.winfo_height())
+        self.resize_current_image(width, height)
 
     def on_configured(self, event: tkinter.Event):
         if event.width != self.cur_image_size[0] or event.height != self.cur_image_size[1]:
@@ -69,16 +80,17 @@ class ShowFrame(ttk.Frame):
         self.img_label.image = new_image_tk
         self.cur_image_size = new_image_tk.width(), new_image_tk.height()
 
-    def on_timer_tick(self):
+    def timer_tick(self):
         self.time_left -= 1
-        self.refresh_time_label()
+        self.update_time_label()
 
         if self.time_left == 0:
             self.on_time_expired()
             self.time_left = self.data.interval
-            self.refresh_time_label()
+            self.update_time_label()
 
-        self.time_label.after(1000, self.on_timer_tick)
+        # so it recursively does the counting
+        self.time_label.after(1000, self.timer_tick)
 
     def on_time_expired(self):
         self.cur_image_i += 1
@@ -87,7 +99,7 @@ class ShowFrame(ttk.Frame):
 
         self.change_image()
 
-    def refresh_time_label(self):
+    def update_time_label(self):
         mins = self.time_left // 60
         secs = self.time_left - mins * 60
         self.time_label_text.set(f"{mins:02d}:{secs:02d}")
