@@ -8,3 +8,10 @@ WHY DOES IT INVOKE SMARTSCREEN THIS IS SO STUPID
 i'll do a readme later, believe me
 
 i'll also add some features like skipping and pausing later
+
+![image](https://github.com/user-attachments/assets/274de13c-7f58-435c-bbce-59b1bff70460)
+
+![image](https://github.com/user-attachments/assets/34c7e21f-f587-429b-94c3-314ec02a0f6c)
+
+![image](https://github.com/user-attachments/assets/30fa85e9-1af3-4fbe-b87a-99a61df80106)
+
