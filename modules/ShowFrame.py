@@ -6,7 +6,7 @@ from PIL import ImageTk
 
 from modules.ImageExtensions import OptimizedImage
 from modules.MenuFrame import SessionData
-from modules.Resources import Processed
+from Resources import Processed
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:

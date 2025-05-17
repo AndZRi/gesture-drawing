@@ -104,7 +104,12 @@ class MenuFrame(ttk.Frame):
         src_dir = self.source_dir.get()
         interval = self.mins.get() * 60 + self.secs.get()
 
-        images = get_images_from_dir(src_dir)
+        if src_dir == 'PASHALKO':
+            from Resources import Processed
+            images = Processed.TestImages
+        else:
+            images = get_images_from_dir(src_dir)
+
         if not images:
             messagebox.showwarning("Error", "Please, select an existing and not empty directory.")
             return
