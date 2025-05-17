@@ -54,6 +54,8 @@ class OptimizedImage:
 
 
 if __name__ == '__main__':
-    a = OptimizedImage(Image.open("../test_images/test_image2.webp"))
+    from Resources import Processed
+
+    a = OptimizedImage(Processed.TestImages[1])
     for i in a.series:
         i.show()
