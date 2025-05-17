@@ -30,9 +30,13 @@ class ShowFrame(ttk.Frame):
         self.bind("<Configure>", self.on_configured)
 
     def init_widgets(self):
-        # initializing
-        img_label = ttk.Label(self, text='Loading image...')
-        time_label = ttk.Label(self, textvariable=self.time_label_text, font=('consolas', 20))
+        self.configure(borderwidth=0)
+
+        # initializing using Label instead of ttk.Label because it has highlight thickness setting, so we can remove
+        # this pissing of invisible border on bottom and left
+        img_label = Label(self, text='Loading image...', compound='none',
+                          highlightthickness=0, borderwidth=0, relief=FLAT, padx=0, pady=0)
+        time_label = Label(self, textvariable=self.time_label_text, font=('consolas', 20), highlightthickness=0)
 
         # packing in the window (frame)
         time_label.pack(expand=False, side=TOP)
@@ -61,7 +65,7 @@ class ShowFrame(ttk.Frame):
         width, height = self.img_label.winfo_width(), self.img_label.winfo_height()
 
         # showing the "Loading image..." thing
-        self.img_label.configure(image=None)
+        self.img_label.configure(image='')
         self.img_label.image = None
         self.img_label.update()
 
@@ -70,7 +74,8 @@ class ShowFrame(ttk.Frame):
 
     def on_configured(self, event: tkinter.Event):
         if event.width != self.cur_image_size[0] or event.height != self.cur_image_size[1]:
-            self.resize_current_image(event.width, event.height - self.time_label.winfo_height())
+            self.resize_current_image(event.width + 1, event.height - self.time_label.winfo_height() + 1)
+            # +1 +1 to remove the 1 pixel space (idk where that comes from)
 
     def resize_current_image(self, width, height):
         new_image = self.cur_optimized_image.resized((width, height))
