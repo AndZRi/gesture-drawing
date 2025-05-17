@@ -2,10 +2,11 @@ import tkinter
 from tkinter import *
 from tkinter import ttk
 
-from PIL import ImageTk, Image
+from PIL import ImageTk
 
 from modules.ImageExtensions import OptimizedImage
 from modules.MenuFrame import SessionData
+from Resources import Processed
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -18,9 +19,9 @@ class ShowFrame(ttk.Frame):
 
         self.gd = gd
         self.cur_image_i = 0
-        self.cur_optimized_image = OptimizedImage(Image.open("./test_images/test_image.jpg"))
+        self.data = SessionData([Processed.TestImages[0]], 0)
+        self.cur_optimized_image = OptimizedImage(self.data.images[0])
         self.cur_image_size = (0, 0)
-        self.data = SessionData([Image.open("./test_images/test_image.jpg")], 0)
 
         self.time_left = 0
         self.time_label_text = StringVar()
@@ -94,13 +95,12 @@ class ShowFrame(ttk.Frame):
 
 
 if __name__ == '__main__':
-    from GestureDrawing import GestureDrawing
-    from MenuFrame import get_images_from_dir
-    from GlobalConstants import *
+    from modules.GestureDrawing import GestureDrawing
+    from modules.GlobalConstants import *
 
 
     root = Tk()
     gd = GestureDrawing(root)
 
-    gd.on_data_received(SessionData(images=get_images_from_dir(TEST_IMAGES_DIR), interval=TEST_INTERVAL))
+    gd.on_data_received(SessionData(images=Processed.TestImages, interval=TEST_INTERVAL))
     root.mainloop()
