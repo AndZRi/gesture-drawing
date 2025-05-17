@@ -39,8 +39,8 @@ class ShowFrame(ttk.Frame):
         time_label = Label(self, textvariable=self.time_label_text, font=('consolas', 20), highlightthickness=0)
 
         # packing in the window (frame)
-        time_label.pack(expand=False, side=TOP)
-        img_label.pack(expand=True, anchor=CENTER)
+        time_label.pack(expand=False, fill=X, side=TOP)
+        img_label.pack(expand=True, fill=BOTH, anchor=CENTER)
 
         # assigning as attributes
         self.img_label = img_label
@@ -71,13 +71,18 @@ class ShowFrame(ttk.Frame):
 
         self.cur_optimized_image = OptimizedImage(self.data.images[self.cur_image_i])
         self.resize_current_image(width, height)
+        # self.resize_current_image(self.winfo_width(), self.winfo_height() - self.time_label.winfo_height())
 
     def on_configured(self, event: tkinter.Event):
         if event.width != self.cur_image_size[0] or event.height != self.cur_image_size[1]:
-            self.resize_current_image(event.width + 1, event.height - self.time_label.winfo_height() + 1)
-            # +1 +1 to remove the 1 pixel space (idk where that comes from)
+            # self.resize_current_image(event.width, event.height - self.time_label.winfo_height())
+            self.img_label.update_idletasks()
+            self.resize_current_image(self.img_label.winfo_width(), self.img_label.winfo_height())
 
     def resize_current_image(self, width, height):
+        # +3 +3 to remove the space on sides and bottom (idk where that comes from)
+        width += 3
+        height += 3
         new_image = self.cur_optimized_image.resized((width, height))
 
         new_image_tk = ImageTk.PhotoImage(new_image)
