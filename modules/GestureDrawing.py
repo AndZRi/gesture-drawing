@@ -10,7 +10,7 @@ class GestureDrawing:
         root.title("Gesture Drawing!")
         root.rowconfigure(index=0, weight=1)
         root.columnconfigure(index=0, weight=1)
-        root.geometry("300x200")
+        root.geometry("350x200")
         root.minsize(50, 50)
         root.grid_propagate(False)
 

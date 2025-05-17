@@ -76,11 +76,11 @@ class MenuFrame(ttk.Frame):
         time_frame.grid_columnconfigure(1, weight=1)
         time_frame.grid_rowconfigure(1, weight=1)
 
-        time_label      = ttk.Label(time_frame, text="Time: ", font=20)
-        minutes_entry   = ttk.Entry(time_frame, textvariable=self.mins, width=10)
-        secs_entry      = ttk.Entry(time_frame, textvariable=self.secs, width=10)
-        ttk.Label(time_frame, text='m   ', font=20).grid(column=3, row=1, sticky=W)
-        ttk.Label(time_frame, text='s', font=20).grid(column=5, row=1, sticky=W)
+        time_label      = ttk.Label(time_frame, text="Time:", font=('Consolas', 18))
+        minutes_entry   = ttk.Entry(time_frame, textvariable=self.mins, width=5, font=('Arial', 15))
+        secs_entry      = ttk.Entry(time_frame, textvariable=self.secs, width=5, font=('Arial', 15))
+        ttk.Label(time_frame, text='m  ', font=('Consolas', 18), padding='4 4 4 4').grid(column=3, row=1, sticky=W)
+        ttk.Label(time_frame, text='s', font=('Consolas', 18), padding='4 4 4 4').grid(column=5, row=1, sticky=W)
 
         time_label.     grid(column=1, row=1, sticky=NSEW)
         minutes_entry.  grid(column=2, row=1)
