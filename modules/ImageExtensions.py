@@ -53,6 +53,7 @@ class OptimizedImage:
         return resize_rationed(src, size)
 
 
+# opens the series of compressed versions of one test image
 if __name__ == '__main__':
     from Resources import Processed
 
