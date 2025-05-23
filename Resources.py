@@ -17,9 +17,11 @@ class RelativePaths:
     PLAY_ICON = "icons\\play.png"
     NEXT_ICON = "icons\\next.png"
     PREVIOUS_ICON = "icons\\previous.png"
+    PAUSE_ICON = "icons\\pause.png"
 
 class Processed:
     TestImages = get_images_from_dir(resource_path(RelativePaths.TEST_IMAGES_DIR))
     PlayIcon = Image.open(resource_path(RelativePaths.PLAY_ICON))
     NextIcon = Image.open(resource_path(RelativePaths.NEXT_ICON))
     PreviousIcon = Image.open(resource_path(RelativePaths.PREVIOUS_ICON))
+    PauseIcon = Image.open(resource_path(RelativePaths.PAUSE_ICON))
