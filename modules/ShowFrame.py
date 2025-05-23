@@ -115,7 +115,7 @@ class ShowFrame(ttk.Frame):
 
 if __name__ == '__main__':
     from modules.GestureDrawing import GestureDrawing
-    from modules.GlobalConstants import *
+    from modules.Constants import *
 
 
     root = Tk()
