@@ -22,9 +22,9 @@ class ControlPanel(ttk.Frame):
         self.grid_columnconfigure(2, weight=1)
         self.grid_propagate(True)
 
-        play_img = ImageTk.PhotoImage(Processed.PlayIcon)
-        play_button = ttk.Button(self, image=play_img, command=self.on_play_button_clicked)
-        play_button.image = play_img
+        pause_img = ImageTk.PhotoImage(Processed.PauseIcon)
+        play_button = ttk.Button(self, image=pause_img, command=self.on_play_button_clicked)
+        play_button.image = pause_img
 
         prev_img = ImageTk.PhotoImage(Processed.PreviousIcon)
         previous_button = ttk.Button(self, image=prev_img, command=self.on_previous_button_clicked)
@@ -38,8 +38,19 @@ class ControlPanel(ttk.Frame):
         play_button.grid(column=1, row=0)
         next_button.grid(column=2, row=0, sticky=W)
 
+        self.play_button = play_button
+
     def switch_pause(self):
         self.paused = not self.paused
+
+        if self.paused:
+            play_img = ImageTk.PhotoImage(Processed.PlayIcon)
+            self.play_button.configure(image=play_img)
+            self.play_button.image = play_img
+        else:
+            pause_img = ImageTk.PhotoImage(Processed.PauseIcon)
+            self.play_button.configure(image=pause_img)
+            self.play_button.image = pause_img
 
     def on_play_button_clicked(self):
         for i in self.play_button_listeners:
