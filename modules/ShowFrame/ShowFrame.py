@@ -23,7 +23,7 @@ class ShowFrame(ttk.Frame):
         super().__init__(gd.root)
 
         self.gd = gd
-        self.cur_image_i = 0
+        self._cur_image_i = 0  # you should not use this
         self.data = SessionData(Processed.TestImages, 0)
         self.cur_optimized_image = OptimizedImage(self.data.images[0])
         self.cur_image_size = (0, 0)
@@ -33,6 +33,10 @@ class ShowFrame(ttk.Frame):
 
         self.init_widgets()
         self.img_label.bind("<Configure>", self.on_img_label_configured)
+
+    @property
+    def cur_image_i(self):
+        return self._cur_image_i
 
     def init_widgets(self):
         self.configure(borderwidth=0)
@@ -47,7 +51,7 @@ class ShowFrame(ttk.Frame):
         # packing in the window (frame)
         time_label.pack(expand=False, fill=X, side=TOP)
         img_label.pack(expand=True, fill=BOTH, anchor=CENTER)
-        control_panel.pack(expand=False, fill=X, side=BOTTOM)
+        control_panel.pack(expand=False, fill=X, side=BOTTOM, before=img_label)
 
         # assigning as attributes
         self.img_label = img_label
@@ -96,8 +100,9 @@ class ShowFrame(ttk.Frame):
         self.cur_image_size = new_image_tk.width(), new_image_tk.height()
 
     def timer_tick(self):
-        self.time_left -= 1
-        self.update_time_label()
+        if not self.control_panel.paused:
+            self.time_left -= 1
+            self.update_time_label()
 
         if self.time_left == 0:
             self.on_time_expired()
@@ -107,10 +112,10 @@ class ShowFrame(ttk.Frame):
         self.time_label.after(1000, self.timer_tick)
 
     def on_time_expired(self):
-        self.cur_image_i += 1
-        if self.cur_image_i >= len(self.data.images):
-            self.cur_image_i = 0
+        self.set_image_i(self.cur_image_i + 1)
 
+    def set_image_i(self, i: int):
+        self._cur_image_i = i % len(self.data.images)
         self.update_image()
         self.time_left = self.data.interval
 
@@ -124,7 +129,6 @@ class ShowFrame(ttk.Frame):
 if __name__ == '__main__':
     from modules.GestureDrawing import GestureDrawing
     from modules.Constants import *
-
 
     root = Tk()
     gd = GestureDrawing(root)
