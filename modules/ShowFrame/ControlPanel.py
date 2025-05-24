@@ -8,6 +8,7 @@ from Resources import Processed
 class ControlPanel(ttk.Frame):
     def __init__(self, master):
         super().__init__(master)
+
         self.paused = False
         self.previous_button_listeners: list[Callable] = []
         self.play_button_listeners: list[Callable] = [self.switch_pause]
