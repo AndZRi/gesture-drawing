@@ -1,4 +1,3 @@
-import tkinter
 from tkinter import *
 from tkinter import ttk
 
@@ -6,11 +5,17 @@ from PIL import ImageTk
 
 from modules.ImageExtensions import OptimizedImage
 from modules.MenuFrame import SessionData
+from ControlPanel import ControlPanel
 from Resources import Processed
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from main import GestureDrawing
+
+
+# TODO:
+# 1. Distinguish TimerLabel class from ShowFrame
+# 2. Make ControlPanel class with buttons
 
 
 class ShowFrame(ttk.Frame):
@@ -33,18 +38,21 @@ class ShowFrame(ttk.Frame):
         self.configure(borderwidth=0)
 
         # initializing using Label instead of ttk.Label because it has highlight thickness setting, so we can remove
-        # this pissing of invisible border on bottom and left
+        # this pissing off invisible border on bottom and left
         img_label = Label(self, text='Loading image...', compound='none',
                           highlightthickness=0, borderwidth=0, relief=FLAT, padx=0, pady=0)
         time_label = Label(self, textvariable=self.time_label_text, font=('consolas', 20), highlightthickness=0)
+        control_panel = ControlPanel(self)
 
         # packing in the window (frame)
         time_label.pack(expand=False, fill=X, side=TOP)
         img_label.pack(expand=True, fill=BOTH, anchor=CENTER)
+        control_panel.pack(expand=False, fill=X, side=BOTTOM)
 
         # assigning as attributes
         self.img_label = img_label
         self.time_label = time_label
+        self.control_panel = control_panel
 
     def start(self, data: SessionData):
         self.grid(row=0, column=0, sticky=NSEW)
@@ -53,14 +61,14 @@ class ShowFrame(ttk.Frame):
         self.data = data
         self.cur_optimized_image = OptimizedImage(self.data.images[self.cur_image_i])
         self.img_label.update()
-        self.change_image()
+        self.update_image()
 
         # starting the timer
         self.time_left = data.interval
         self.update_time_label()
         self.time_label.after(1000, self.timer_tick)
 
-    def change_image(self):
+    def update_image(self):
         # the label actually shrinks to "Loading image..." size when updated, so we have to
         width, height = self.img_label.winfo_width(), self.img_label.winfo_height()
 
@@ -72,7 +80,7 @@ class ShowFrame(ttk.Frame):
         self.cur_optimized_image = OptimizedImage(self.data.images[self.cur_image_i])
         self.resize_current_image(width, height)
 
-    def on_img_label_configured(self, event: tkinter.Event):
+    def on_img_label_configured(self, event: Event):
         if event.width != self.cur_image_size[0] or event.height != self.cur_image_size[1]:
             self.resize_current_image(event.width, event.height)
 
@@ -93,7 +101,6 @@ class ShowFrame(ttk.Frame):
 
         if self.time_left == 0:
             self.on_time_expired()
-            self.time_left = self.data.interval
             self.update_time_label()
 
         # so it recursively does the counting
@@ -104,7 +111,8 @@ class ShowFrame(ttk.Frame):
         if self.cur_image_i >= len(self.data.images):
             self.cur_image_i = 0
 
-        self.change_image()
+        self.update_image()
+        self.time_left = self.data.interval
 
     def update_time_label(self):
         mins = self.time_left // 60
