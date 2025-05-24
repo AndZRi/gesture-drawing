@@ -12,6 +12,9 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from main import GestureDrawing
 
+# TODO:
+# 1. Make shuffle flag
+
 
 @dataclass
 class SessionData:

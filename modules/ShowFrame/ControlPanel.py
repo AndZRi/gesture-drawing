@@ -11,7 +11,7 @@ class ControlPanel(ttk.Frame):
 
         self.paused = False
         self.previous_button_listeners: list[Callable] = []
-        self.play_button_listeners: list[Callable] = [self.switch_pause]
+        self.play_button_listeners: list[Callable[[bool], ...]] = [self.switch_play_button_image]
         self.next_button_listeners: list[Callable] = []
 
         self.init_widgets()
@@ -41,10 +41,8 @@ class ControlPanel(ttk.Frame):
 
         self.play_button = play_button
 
-    def switch_pause(self):
-        self.paused = not self.paused
-
-        if self.paused:
+    def switch_play_button_image(self, value):
+        if value:
             play_img = ImageTk.PhotoImage(Processed.PlayIcon)
             self.play_button.configure(image=play_img)
             self.play_button.image = play_img
@@ -54,8 +52,9 @@ class ControlPanel(ttk.Frame):
             self.play_button.image = pause_img
 
     def on_play_button_clicked(self):
+        self.paused = not self.paused
         for i in self.play_button_listeners:
-            i()
+            i(self.paused)
 
     def on_previous_button_clicked(self):
         for i in self.previous_button_listeners:
