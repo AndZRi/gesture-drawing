@@ -1,6 +1,5 @@
 from tkinter import *
-
-from collections.abc import Callable
+from utils.Event import Event as uEvent
 
 class TimeLabel(Label):
     def __init__(self, master):
@@ -10,17 +9,15 @@ class TimeLabel(Label):
         self.text = StringVar()
         self.time_left = 0
         self.paused = False
-        self.time_expired_listeners: list[Callable] = []
 
-        self.cur_after_id = None  # used for self.after_cancel()
+        self.__cur_after_id = None  # used for self.after_cancel()
+        self.on_time_expired = uEvent()
 
         self.configure(textvariable=self.text)
 
     def set_timer(self, time: int):
         self.time_left = time
-        if self.cur_after_id is not None:
-            self.after_cancel(self.cur_after_id)
-        self.cur_after_id = self.after(1000, self.timer_tick)
+        self.after(1000, self.timer_tick)
         self.update_text()
 
     def switch_timer(self, paused):
@@ -31,7 +28,7 @@ class TimeLabel(Label):
     def timer_tick(self):
         if not self.paused:
             self.time_left -= 1
-            self.cur_after_id = self.after(1000, self.timer_tick)
+            self.after(1000, self.timer_tick)
 
         self.update_text()
 
@@ -44,6 +41,7 @@ class TimeLabel(Label):
         self.text.set(f"{mins:02d}:{secs:02d}")
         self.update()
 
-    def on_time_expired(self):
-        for i in self.time_expired_listeners:
-            i()
+    def after(self, ms, func=...):
+        if self.__cur_after_id is not None:
+            self.after_cancel(self.__cur_after_id)
+        self.__cur_after_id = super().after(ms, func)
