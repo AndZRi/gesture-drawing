@@ -12,8 +12,6 @@ class Event:
         self.kwargs_types = kwargs_types
         self._listeners = []
 
-        print(args_types)
-
     def fire(self, *args, **kwargs):
         if len(self.args_types) != len(args):
             raise TypeError(f"Number of provided arguments does not match number of"
@@ -29,17 +27,21 @@ class Event:
                 raise TypeError(f"Provided argument\'s type by keyword '{i[0]}' "
                                 f"({type(i)}) does not match required ({j})")
 
-        for func in self._listeners:
-            func(*args, **kwargs)
+        try:
+            for func in self._listeners:
+                func(*args, **kwargs)
+        except TypeError:
+            raise TypeError(f"Bad listener {func}")
 
     def __call__(self, *args, **kwargs):
         self.fire(*args, **kwargs)
 
     def add_listener(self, func: Callable[[...], ...]):
+        """DOES NOT CHECK THE PROVIDED FUNCTION ARGUMENTS, BE CAREFUL"""
         self._listeners.append(func)
 
 
 # a = Event(None, str, sep=str)
 # a.add_listener(print)
-# a.add_listener(str)
+# a.add_listener(str.__str__)
 # a.fire('111', sep='dd')
