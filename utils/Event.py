@@ -25,7 +25,7 @@ class Event:
                 raise TypeError(f"Got an unexpected keyword argument '{i[0]}'")
             if not isinstance(i[1], self.kwargs_types[i[0]]):
                 raise TypeError(f"Provided argument\'s type by keyword '{i[0]}' "
-                                f"({type(i)}) does not match required ({j})")
+                                f"({type(i)}) does not match required ({self.kwargs_types[i[0]]})")
 
         try:
             for func in self._listeners:
