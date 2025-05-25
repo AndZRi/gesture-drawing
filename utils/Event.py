@@ -1,15 +1,45 @@
 from collections.abc import Callable
 
-class Event:
-    def __init__(self):
-        self.listeners = []
+# i surrender in making this type stricted, like why am i even doing this in python, for what
+# i like it though
 
-    def fire(self):
-        for func, args, kwargs in self.listeners:
+class Event:
+    def __init__(self, return_type=None, *args_types, **kwargs_types):
+        """Specify the type of a listener: Callable[*args_types, **kwargs_types] -> return_type"""
+
+        self.return_type = return_type
+        self.args_types = args_types
+        self.kwargs_types = kwargs_types
+        self._listeners = []
+
+        print(args_types)
+
+    def fire(self, *args, **kwargs):
+        if len(self.args_types) != len(args):
+            raise TypeError(f"Number of provided arguments does not match number of"
+                            f" provided arguments types ({len(args)} != {len(self.args_types)}")
+        for i, j in zip(args, self.args_types):
+            if not isinstance(i, j):
+                raise TypeError(f"Provided argument type ({type(i)}) does not match required ({j})")
+
+        for i in kwargs.items():
+            if self.kwargs_types.get(i[0]) is None:
+                raise TypeError(f"Got an unexpected keyword argument '{i[0]}'")
+            if not isinstance(i[1], self.kwargs_types[i[0]]):
+                raise TypeError(f"Provided argument\'s type by keyword '{i[0]}' "
+                                f"({type(i)}) does not match required ({j})")
+
+        for func in self._listeners:
             func(*args, **kwargs)
 
-    def __call__(self):
-        self.fire()
+    def __call__(self, *args, **kwargs):
+        self.fire(*args, **kwargs)
 
-    def add_listener(self, func: Callable[[...], ...], *args, **kwargs):
-        self.listeners.append((func, args, kwargs))
+    def add_listener(self, func: Callable[[...], ...]):
+        self._listeners.append(func)
+
+
+# a = Event(None, str, sep=str)
+# a.add_listener(print)
+# a.add_listener(str)
+# a.fire('111', sep='dd')
