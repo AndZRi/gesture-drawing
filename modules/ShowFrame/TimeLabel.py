@@ -20,9 +20,9 @@ class TimeLabel(Label):
         self.after(1000, self.timer_tick)
         self.update_text()
 
-    def switch_timer(self, paused):
-        self.paused = paused
-        if not paused:
+    def switch_timer(self):
+        self.paused = not self.paused
+        if not self.paused:
             self.set_timer(self.time_left)
 
     def timer_tick(self):

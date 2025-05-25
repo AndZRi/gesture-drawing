@@ -49,8 +49,8 @@ class ShowFrame(ttk.Frame):
         img_label.pack(expand=True, fill=BOTH, anchor=CENTER)
 
         # adding listeners
-        time_label.time_expired_listeners.append(self.next_image)
-        control_panel.play_button_listeners.append(time_label.switch_timer)
+        time_label.on_time_expired.add_listener(self.next_image)
+        control_panel.on_play_button_clicked.add_listener(time_label.switch_timer)
 
         # assigning as attributes
         self.img_label = img_label
@@ -98,7 +98,6 @@ class ShowFrame(ttk.Frame):
 
     def set_image_i(self, i: int):
         self._cur_image_i = i % len(self.data.images)
-        print(i, len(self.data.images))
         self.update_image()
         self.time_label.set_timer(self.data.interval)
 

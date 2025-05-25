@@ -1,18 +1,21 @@
 from tkinter import ttk
 from tkinter import *
-from collections.abc import Callable
 
 from PIL import ImageTk
 from Resources import Processed
+from utils.Event import Event as uEvent
 
 class ControlPanel(ttk.Frame):
     def __init__(self, master):
         super().__init__(master)
 
         self.paused = False
-        self.previous_button_listeners: list[Callable] = []
-        self.play_button_listeners: list[Callable[[bool], ...]] = [self.switch_play_button_image]
-        self.next_button_listeners: list[Callable] = []
+
+        self.on_previous_button_clicked = uEvent()
+        self.on_play_button_clicked = uEvent()
+        self.on_next_button_clicked = uEvent()
+
+        self.on_play_button_clicked.add_listener(self.switch_pause)
 
         self.init_widgets()
 
@@ -41,8 +44,10 @@ class ControlPanel(ttk.Frame):
 
         self.play_button = play_button
 
-    def switch_play_button_image(self, value):
-        if value:
+    def switch_pause(self):
+        self.paused = not self.paused
+
+        if self.paused:
             play_img = ImageTk.PhotoImage(Processed.PlayIcon)
             self.play_button.configure(image=play_img)
             self.play_button.image = play_img
@@ -50,16 +55,3 @@ class ControlPanel(ttk.Frame):
             pause_img = ImageTk.PhotoImage(Processed.PauseIcon)
             self.play_button.configure(image=pause_img)
             self.play_button.image = pause_img
-
-    def on_play_button_clicked(self):
-        self.paused = not self.paused
-        for i in self.play_button_listeners:
-            i(self.paused)
-
-    def on_previous_button_clicked(self):
-        for i in self.previous_button_listeners:
-            i()
-
-    def on_next_button_clicked(self):
-        for i in self.next_button_listeners:
-            i()
