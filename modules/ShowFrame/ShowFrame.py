@@ -5,16 +5,14 @@ from PIL import ImageTk
 
 from modules.ImageExtensions import OptimizedImage
 from modules.MenuFrame import SessionData
-from ControlPanel import ControlPanel
-from TimeLabel import TimeLabel
+from modules.ShowFrame.ControlPanel import ControlPanel
+from modules.ShowFrame.TimeLabel import TimeLabel
 from Resources import Processed
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from main import GestureDrawing
 
-# TODO:
-# 1. add previous and next buttons listeners
 
 class ShowFrame(ttk.Frame):
     def __init__(self, gd: 'GestureDrawing'):
@@ -51,6 +49,8 @@ class ShowFrame(ttk.Frame):
         # adding listeners
         time_label.on_time_expired.add_listener(self.next_image)
         control_panel.on_play_button_clicked.add_listener(time_label.switch_timer)
+        control_panel.on_next_button_clicked.add_listener(self.next_image)
+        control_panel.on_previous_button_clicked.add_listener(self.prev_image)
 
         # assigning as attributes
         self.img_label = img_label
@@ -103,6 +103,9 @@ class ShowFrame(ttk.Frame):
 
     def next_image(self):
         self.set_image_i(self.cur_image_i + 1)
+
+    def prev_image(self):
+        self.set_image_i(self.cur_image_i - 1)
 
 
 if __name__ == '__main__':
