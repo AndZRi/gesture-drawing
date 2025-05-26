@@ -20,6 +20,7 @@ class Event:
             if not isinstance(i, j):
                 raise TypeError(f"Provided argument type ({type(i)}) does not match required ({j})")
 
+        # just checking if kwargs types don't match or if there is an extra one
         for i in kwargs.items():
             if self.kwargs_types.get(i[0]) is None:
                 raise TypeError(f"Got an unexpected keyword argument '{i[0]}'")
@@ -31,7 +32,7 @@ class Event:
             for func in self._listeners:
                 func(*args, **kwargs)
         except TypeError:
-            raise TypeError(f"Bad listener {func}")
+            raise TypeError(f"Bad listener '{func.__name__}'. Good luck.")  # why is it possible you stupid bustard
 
     def __call__(self, *args, **kwargs):
         self.fire(*args, **kwargs)
