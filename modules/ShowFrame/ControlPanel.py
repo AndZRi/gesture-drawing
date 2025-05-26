@@ -26,6 +26,7 @@ class ControlPanel(ttk.Frame):
         self.grid_columnconfigure(2, weight=1)
         self.grid_propagate(True)
 
+        # adjust the size of buttons with the icons size (i was lazy)
         pause_img = ImageTk.PhotoImage(Processed.PauseIcon)
         play_button = ttk.Button(self, image=pause_img, command=self.on_play_button_clicked)
         play_button.image = pause_img
