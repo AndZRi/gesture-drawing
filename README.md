@@ -5,13 +5,10 @@ Basically a version of Gesture Drawing for poor (12$ for the slideshow wtf)
 
 2. Get your shuffled images slideshow with your time interval!
 
-## it does invoke smartscreen defender because of the --onefile parameter of pyinstaller, don't worry
-## you can check it via https://www.virustotal.com/gui/home/upload
-## if you are really afraid of it, you can compile the program by yourself
+## if you have smartscreen invoked, just download the zip version
+## or compile by yourself, i basically have already put everything you need
 
-i'll do a readme later, believe me
-
-i'll also add some features like skipping and pausing later
+i'll do a better readme later, don't trust me
 
 ![image](https://github.com/user-attachments/assets/a059c483-01a6-4f48-87ea-7bb7b4ceba75)
 
