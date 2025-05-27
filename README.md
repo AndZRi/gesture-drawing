@@ -5,6 +5,8 @@ Basically a version of Gesture Drawing for poor (12$ for the slideshow wtf)
 
 2. Get your shuffled images slideshow with your time interval!
 
+3. also the window is always-on-top by default
+
 ## if you have smartscreen invoked, just download the zip version
 ## or compile by yourself, i basically have already put everything you need
 
