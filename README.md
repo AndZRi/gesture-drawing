@@ -13,9 +13,8 @@ i'll do a readme later, believe me
 
 i'll also add some features like skipping and pausing later
 
-![image](https://github.com/user-attachments/assets/274de13c-7f58-435c-bbce-59b1bff70460)
+![image](https://github.com/user-attachments/assets/a059c483-01a6-4f48-87ea-7bb7b4ceba75)
 
-![image](https://github.com/user-attachments/assets/34c7e21f-f587-429b-94c3-314ec02a0f6c)
+![image](https://github.com/user-attachments/assets/c933a97e-50b9-4c7f-9084-29a7f6c30335)
 
-![image](https://github.com/user-attachments/assets/30fa85e9-1af3-4fbe-b87a-99a61df80106)
-
+![image](https://github.com/user-attachments/assets/df232b6d-272d-4c84-b404-f7f5415c6aa4)
