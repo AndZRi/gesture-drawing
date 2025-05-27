@@ -4,3 +4,5 @@ __pycache__/
 .idea/
 dist/
 build/
+icons-svg/
+convert-icons.py

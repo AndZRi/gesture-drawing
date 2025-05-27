@@ -2,41 +2,23 @@ import random
 from tkinter import *
 from tkinter import ttk, filedialog, messagebox
 
-from PIL import Image, UnidentifiedImageError
+from PIL import Image
+from Resources import get_images_from_dir
 
-import os
-from os import listdir
 from dataclasses import dataclass
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from main import GestureDrawing
 
+# TODO:
+# 1. Make shuffle flag
+
 
 @dataclass
 class SessionData:
     images: list[Image.Image]
     interval: int = 0
-
-
-def get_images_from_dir(src_dir: str) -> list[Image.Image]:
-    images = []
-    success, failure = 0, 0
-
-    if not os.path.isdir(src_dir):
-        return []
-    for filename in listdir(src_dir):
-        try:
-            images.append(Image.open(src_dir + '/' + filename))
-            success += 1
-
-        except UnidentifiedImageError as ex:
-            print(ex)
-            failure += 1
-
-    print(f"loaded {success}/{failure + success} files")
-
-    return images
 
 
 class MenuFrame(ttk.Frame):

@@ -1,4 +1,3 @@
-import tkinter
 from tkinter import *
 from tkinter import ttk
 
@@ -6,6 +5,8 @@ from PIL import ImageTk
 
 from modules.ImageExtensions import OptimizedImage
 from modules.MenuFrame import SessionData
+from modules.ShowFrame.ControlPanel import ControlPanel
+from modules.ShowFrame.TimeLabel import TimeLabel
 from Resources import Processed
 
 from typing import TYPE_CHECKING
@@ -18,33 +19,43 @@ class ShowFrame(ttk.Frame):
         super().__init__(gd.root)
 
         self.gd = gd
-        self.cur_image_i = 0
+        self._cur_image_i = 0  # you should not use this
         self.data = SessionData(Processed.TestImages, 0)
         self.cur_optimized_image = OptimizedImage(self.data.images[0])
         self.cur_image_size = (0, 0)
 
-        self.time_left = 0
-        self.time_label_text = StringVar()
-
         self.init_widgets()
         self.img_label.bind("<Configure>", self.on_img_label_configured)
+
+    @property
+    def cur_image_i(self):
+        return self._cur_image_i
 
     def init_widgets(self):
         self.configure(borderwidth=0)
 
         # initializing using Label instead of ttk.Label because it has highlight thickness setting, so we can remove
-        # this pissing of invisible border on bottom and left
+        # this pissing off invisible border on bottom and left
         img_label = Label(self, text='Loading image...', compound='none',
                           highlightthickness=0, borderwidth=0, relief=FLAT, padx=0, pady=0)
-        time_label = Label(self, textvariable=self.time_label_text, font=('consolas', 20), highlightthickness=0)
+        time_label = TimeLabel(self)
+        control_panel = ControlPanel(self)
 
         # packing in the window (frame)
         time_label.pack(expand=False, fill=X, side=TOP)
+        control_panel.pack(expand=False, fill=X, side=BOTTOM)
         img_label.pack(expand=True, fill=BOTH, anchor=CENTER)
+
+        # adding listeners
+        time_label.on_time_expired.add_listener(self.next_image)
+        control_panel.on_play_button_clicked.add_listener(time_label.switch_timer)
+        control_panel.on_next_button_clicked.add_listener(self.next_image)
+        control_panel.on_previous_button_clicked.add_listener(self.prev_image)
 
         # assigning as attributes
         self.img_label = img_label
         self.time_label = time_label
+        self.control_panel = control_panel
 
     def start(self, data: SessionData):
         self.grid(row=0, column=0, sticky=NSEW)
@@ -53,14 +64,12 @@ class ShowFrame(ttk.Frame):
         self.data = data
         self.cur_optimized_image = OptimizedImage(self.data.images[self.cur_image_i])
         self.img_label.update()
-        self.change_image()
+        self.update_image()
 
         # starting the timer
-        self.time_left = data.interval
-        self.update_time_label()
-        self.time_label.after(1000, self.timer_tick)
+        self.time_label.set_timer(self.data.interval)
 
-    def change_image(self):
+    def update_image(self):
         # the label actually shrinks to "Loading image..." size when updated, so we have to
         width, height = self.img_label.winfo_width(), self.img_label.winfo_height()
 
@@ -72,7 +81,7 @@ class ShowFrame(ttk.Frame):
         self.cur_optimized_image = OptimizedImage(self.data.images[self.cur_image_i])
         self.resize_current_image(width, height)
 
-    def on_img_label_configured(self, event: tkinter.Event):
+    def on_img_label_configured(self, event: Event):
         if event.width != self.cur_image_size[0] or event.height != self.cur_image_size[1]:
             self.resize_current_image(event.width, event.height)
 
@@ -87,36 +96,21 @@ class ShowFrame(ttk.Frame):
         self.img_label.image = new_image_tk
         self.cur_image_size = new_image_tk.width(), new_image_tk.height()
 
-    def timer_tick(self):
-        self.time_left -= 1
-        self.update_time_label()
+    def set_image_i(self, i: int):
+        self._cur_image_i = i % len(self.data.images)
+        self.update_image()
+        self.time_label.set_timer(self.data.interval)
 
-        if self.time_left == 0:
-            self.on_time_expired()
-            self.time_left = self.data.interval
-            self.update_time_label()
+    def next_image(self):
+        self.set_image_i(self.cur_image_i + 1)
 
-        # so it recursively does the counting
-        self.time_label.after(1000, self.timer_tick)
-
-    def on_time_expired(self):
-        self.cur_image_i += 1
-        if self.cur_image_i >= len(self.data.images):
-            self.cur_image_i = 0
-
-        self.change_image()
-
-    def update_time_label(self):
-        mins = self.time_left // 60
-        secs = self.time_left - mins * 60
-        self.time_label_text.set(f"{mins:02d}:{secs:02d}")
-        self.time_label.update()
+    def prev_image(self):
+        self.set_image_i(self.cur_image_i - 1)
 
 
 if __name__ == '__main__':
     from modules.GestureDrawing import GestureDrawing
-    from modules.GlobalConstants import *
-
+    from modules.Constants import *
 
     root = Tk()
     gd = GestureDrawing(root)

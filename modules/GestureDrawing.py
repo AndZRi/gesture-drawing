@@ -1,7 +1,7 @@
 from tkinter import *
 
 from modules.MenuFrame import MenuFrame
-from modules.ShowFrame import ShowFrame
+from modules.ShowFrame.ShowFrame import ShowFrame
 
 
 class GestureDrawing:
