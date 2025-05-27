@@ -1,5 +1,6 @@
 import sys
 import os
+from enum import StrEnum
 
 from PIL import Image, UnidentifiedImageError
 
@@ -31,16 +32,16 @@ def get_images_from_dir(src_dir: str) -> list[Image.Image]:
     return images
 
 
-class RelativePaths:
-    TEST_IMAGES_DIR = "test_images"
-    PLAY_ICON = "icons\\play.png"
-    NEXT_ICON = "icons\\next.png"
-    PREVIOUS_ICON = "icons\\previous.png"
-    PAUSE_ICON = "icons\\pause.png"
+class AbsolutePaths(StrEnum):
+    TEST_IMAGES_DIR = resource_path("data/test_images/")
+    PLAY_ICON = resource_path("data/icons/play.png")
+    NEXT_ICON = resource_path("data/icons/next.png")
+    PREVIOUS_ICON = resource_path("data/icons/previous.png")
+    PAUSE_ICON = resource_path("data/icons/pause.png")
 
 class Processed:
-    TestImages = get_images_from_dir(resource_path(RelativePaths.TEST_IMAGES_DIR))
-    PlayIcon = Image.open(resource_path(RelativePaths.PLAY_ICON))
-    NextIcon = Image.open(resource_path(RelativePaths.NEXT_ICON))
-    PreviousIcon = Image.open(resource_path(RelativePaths.PREVIOUS_ICON))
-    PauseIcon = Image.open(resource_path(RelativePaths.PAUSE_ICON))
+    TestImages = get_images_from_dir(AbsolutePaths.TEST_IMAGES_DIR)
+    PlayIcon = Image.open(AbsolutePaths.PLAY_ICON)
+    NextIcon = Image.open(AbsolutePaths.NEXT_ICON)
+    PreviousIcon = Image.open(AbsolutePaths.PREVIOUS_ICON)
+    PauseIcon = Image.open(AbsolutePaths.PAUSE_ICON)
