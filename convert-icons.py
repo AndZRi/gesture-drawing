@@ -2,6 +2,8 @@ from svglib.svglib import svg2rlg
 from reportlab.graphics import renderPM
 import os
 
+# i couldn't make this work for me because of some cairo errors, so...
+
 # i don't think you need this, but in case you want all of a sudden
 # install cairosvg via pip
 
