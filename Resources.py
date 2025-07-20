@@ -1,6 +1,7 @@
 import sys
 import os
 from enum import StrEnum
+from pathlib import Path
 
 from PIL import Image, UnidentifiedImageError
 
@@ -18,9 +19,12 @@ def get_images_from_dir(src_dir: str) -> list[Image.Image]:
 
     if not os.path.isdir(src_dir):
         return []
-    for filename in os.listdir(src_dir):
+    for filename in Path(src_dir).rglob("*"):
+        if filename.is_dir():
+            continue
+
         try:
-            images.append(Image.open(src_dir + '/' + filename))
+            images.append(Image.open(filename.absolute()))
             success += 1
 
         except UnidentifiedImageError as ex:
