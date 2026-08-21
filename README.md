@@ -1,3 +1,5 @@
+## if you have SMARTSCREEN invoked, just download the zip version
+
 # Gesture Drawing
 Basically a version of Gesture Drawing for poor (12$ for the slideshow wtf)
 
@@ -9,7 +11,6 @@ Basically a version of Gesture Drawing for poor (12$ for the slideshow wtf)
 
 if you have encountered any issues, please feel free to post it https://github.com/AndZRi/gesture-drawing/issues
 
-## if you have smartscreen invoked, just download the zip version
 ## or compile by yourself, i basically have already put everything you need
 
 
