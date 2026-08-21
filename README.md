@@ -1,4 +1,4 @@
-## if you have SMARTSCREEN invoked, just download the zip version
+## if you have SMARTSCREEN invoked, download the zip version
 
 # Gesture Drawing
 Basically a version of Gesture Drawing for poor (12$ for the slideshow wtf)
